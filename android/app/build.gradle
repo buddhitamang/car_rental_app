@@ -1,6 +1,5 @@
 // The buildscript block MUST be at the top
 buildscript {
-    ext.kotlin_version = '1.5.31'
     repositories {
         google()
         mavenCentral()
@@ -20,13 +19,13 @@ android {
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     defaultConfig {
         applicationId = "com.example.car_rental_app"
-        minSdk = 21
+        minSdk = 23
         targetSdk = 34
 
         // Define these values directly

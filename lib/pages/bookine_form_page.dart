@@ -53,7 +53,7 @@ class _BookingFormPageState extends State<BookingFormPage> {
     final isPaymentSuccessful = await StripeService.instance.makePayment(amount);
 
     if (isPaymentSuccessful) {
-      // Proceed with saving the booking after successful payment
+      // Payment was successful, save the booking
       await _saveBooking();
     } else {
       // Payment failed, show an error message

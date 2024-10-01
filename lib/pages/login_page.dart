@@ -1,3 +1,4 @@
+import 'package:car_rental_app/pages/forgot_pw_page.dart';
 import 'package:car_rental_app/pages/home_page.dart';
 import 'package:car_rental_app/pages/main_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -55,14 +56,13 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  bool showPassword=false;
+  bool showPassword = false;
 
-  void enablePassword(){
+  void enablePassword() {
     setState(() {
-      showPassword=!showPassword;
+      showPassword = !showPassword;
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +84,9 @@ class _LoginPageState extends State<LoginPage> {
                   padding: const EdgeInsets.only(top: 20.0, bottom: 40),
                   child: Text(
                     'Welcome to DriveAway!',
-                    style: TextStyle(fontSize: 30,color: Theme.of(context).textTheme.displayLarge?.color),
+                    style: TextStyle(
+                        fontSize: 30,
+                        color: Theme.of(context).textTheme.displayLarge?.color),
                   ),
                 ),
                 Container(
@@ -104,16 +106,25 @@ class _LoginPageState extends State<LoginPage> {
                         controller: passwordController,
                         suffixIcon: Icons.remove_red_eye,
                         hintText: 'Enter your password',
-                        obscureText: showPassword? false :true,
+                        obscureText: showPassword ? false : true,
                         onPressed: enablePassword,
                       ),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          Container(),
-                          Text(
-                            'Forgot Password?',
-                            style: TextStyle(fontSize: 15, color: Theme.of(context).textTheme.displayMedium?.color),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(context, MaterialPageRoute(builder: (context)=>ForgotPwPage()));
+                            },
+                            child: Text(
+                              'Forgot Password?',
+                              style: TextStyle(
+                                  fontSize: 15,
+                                  color: Theme.of(context)
+                                      .textTheme
+                                      .displayMedium
+                                      ?.color),
+                            ),
                           ),
                         ],
                       ),
@@ -132,16 +143,16 @@ class _LoginPageState extends State<LoginPage> {
                                 padding: const EdgeInsets.all(15.0),
                                 child: isLoading
                                     ? CircularProgressIndicator(
-                                  color: Colors.white,
-                                )
+                                        color: Colors.white,
+                                      )
                                     : Text(
-                                  'Login',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
+                                        'Login',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
                               ),
                             ),
                           ),
@@ -157,7 +168,8 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
                             child: Text(
                               'or',
                               style: TextStyle(
@@ -187,7 +199,8 @@ class _LoginPageState extends State<LoginPage> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Image.asset('lib/assets/google.png', height: 26, width: 26),
+                                Image.asset('lib/assets/google.png',
+                                    height: 26, width: 26),
                                 SizedBox(width: 20),
                                 Text(
                                   'Login using Google',
@@ -206,7 +219,12 @@ class _LoginPageState extends State<LoginPage> {
                         children: [
                           Text(
                             'Don\'t have an account?',
-                            style: TextStyle(fontSize: 18,color: Theme.of(context).textTheme.displayLarge?.color),
+                            style: TextStyle(
+                                fontSize: 18,
+                                color: Theme.of(context)
+                                    .textTheme
+                                    .displayLarge
+                                    ?.color),
                           ),
                           SizedBox(width: 12),
                           GestureDetector(

@@ -1,10 +1,13 @@
 // The buildscript block MUST be at the top
 buildscript {
+    ext.kotlin_version = '1.7.10' // Update to the latest supported version
+
     repositories {
         google()
         mavenCentral()
     }
     dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version" // Add this line for Kotlin plugin
         classpath 'com.google.gms:google-services:4.4.2' // or the latest version
     }
 }
@@ -20,7 +23,7 @@ allprojects {
     repositories {
         google()
         mavenCentral()
-    }
+    } // Remove the stray 'ff' here
 }
 
 rootProject.buildDir = "../build"

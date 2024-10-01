@@ -4,44 +4,51 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class AuthService extends ChangeNotifier {
-  //instance of auth
+  // Instance of FirebaseAuth
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
-  //instance of firestore
+  // Instance of Firestore
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  //sign user in
+  // Sign user in
   Future<UserCredential> signInWithEmailAndPassword(
       String email, String password) async {
     try {
       UserCredential userCredential = await _firebaseAuth
           .signInWithEmailAndPassword(email: email, password: password);
 
-      _firestore.collection('users').doc(userCredential.user!.uid).set({
-        'uid': userCredential.user!.uid,
-        'email': email,
-      }, SetOptions(merge: true));
+      DocumentSnapshot userDoc = await _firestore.collection('users').doc(userCredential.user!.uid).get();
+
+      if (!userDoc.exists) {
+        // If not, create the user document
+        await _firestore.collection('users').doc(userCredential.user!.uid).set({
+          'uid': userCredential.user!.uid,
+          'email': email,
+          'isAdmin': false, // Default to false for regular users
+        }, SetOptions(merge: true));
+      }
+
       return userCredential;
-    }
-    //catch any errors
-    on FirebaseAuthException catch (e) {
+    } on FirebaseAuthException catch (e) {
       throw Exception(e.code);
     }
   }
 
-  //create a new user
+  // Create a new user
   Future<UserCredential> signUpWithEmailAndPassword(
-      String email, String password) async {
+      String email, String password, {bool isAdmin = false}) async {
     try {
-      UserCredential userCredential =
-      await _firebaseAuth.createUserWithEmailAndPassword(
+      UserCredential userCredential = await _firebaseAuth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
 
-      _firestore.collection('users').doc(userCredential.user!.uid).set({
+      // Set user data in Firestore with the specified role
+      await _firestore.collection('users').doc(userCredential.user!.uid).set({
         'uid': userCredential.user!.uid,
         'email': email,
+        'isAdmin': isAdmin, // Set the admin status
+        'createdAt': FieldValue.serverTimestamp(), // Optional: Timestamp
       });
 
       return userCredential;
@@ -50,8 +57,17 @@ class AuthService extends ChangeNotifier {
     }
   }
 
-  //sign user out
+  // Sign user out
   Future<void> signOut() async {
-    return await FirebaseAuth.instance.signOut();
+    await _firebaseAuth.signOut();
   }
+
+  // // Check if user is admin
+  // Future<bool> isUserAdmin(String uid) async {
+  //   DocumentSnapshot userDoc = await _firestore.collection('users').doc(uid).get();
+  //   if (userDoc.exists && userDoc.data() != null) {
+  //     return userDoc.data()!['isAdmin'] ?? false;
+  //   }
+  //   return false; // Not an admin by default
+  // }
 }

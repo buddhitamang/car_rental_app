@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
-
 import '../const.dart';
 
 class StripeService {
@@ -11,13 +10,19 @@ class StripeService {
   Future<bool> makePayment(double amount) async {
     try {
       String? paymentIntentClientSecret = await _createIntentPayment(amount, "usd");
-      if (paymentIntentClientSecret == null) return false;
+      if (paymentIntentClientSecret == null) {
+        print("Failed to create payment intent.");
+        return false; // Payment intent creation failed
+      }
 
-      await Stripe.instance.initPaymentSheet(paymentSheetParameters: SetupPaymentSheetParameters(
-        paymentIntentClientSecret: paymentIntentClientSecret,
-        merchantDisplayName: "car rental app",
-      ));
-      await _processPayment();
+      await Stripe.instance.initPaymentSheet(
+        paymentSheetParameters: SetupPaymentSheetParameters(
+          paymentIntentClientSecret: paymentIntentClientSecret,
+          merchantDisplayName: "Car Rental App",
+        ),
+      );
+
+      await _processPayment(); // Open payment options here before proceeding
       return true; // Payment success
     } catch (e) {
       print("Payment error: $e");
@@ -34,7 +39,7 @@ class StripeService {
       };
 
       var response = await dio.post(
-        'https://your-backend-url.com/create-payment-intent',
+        'https://api.stripe.com/v1/payment_intents',
         data: data,
         options: Options(
           contentType: Headers.formUrlEncodedContentType,
@@ -45,13 +50,15 @@ class StripeService {
         ),
       );
 
-      if (response.data != null) {
-        return response.data["client_secret"];
+      // Ensure that the response data is correctly parsed as a Map
+      if (response.data != null && response.data is Map<String, dynamic>) {
+        return response.data["client_secret"] as String?;
       } else {
+        print("Unexpected response format: ${response.data}");
         return null;
       }
     } catch (e) {
-      print(e);
+      print("Error creating payment intent: $e");
       return null;
     }
   }
@@ -60,7 +67,7 @@ class StripeService {
     try {
       await Stripe.instance.presentPaymentSheet();
     } catch (e) {
-      print(e);
+      print("Error presenting payment sheet: $e");
       throw e; // Re-throw error to indicate failure
     }
   }
