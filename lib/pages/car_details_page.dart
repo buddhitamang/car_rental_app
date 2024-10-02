@@ -4,10 +4,22 @@ import 'package:flutter/material.dart';
 
 import '../model/car.dart';
 
-class CarDetailsPage extends StatelessWidget {
+class CarDetailsPage extends StatefulWidget {
   final Car car;
 
-  const CarDetailsPage({Key? key, required this.car,}) : super(key: key);
+  const CarDetailsPage({Key? key, required this.car}) : super(key: key);
+
+  @override
+  State<CarDetailsPage> createState() => _CarDetailsPageState();
+}
+
+class _CarDetailsPageState extends State<CarDetailsPage> {
+  final TextEditingController _commentController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +33,7 @@ class CarDetailsPage extends StatelessWidget {
                 Container(
                   height: 300,
                   child: Image.network(
-                    car.imageUrl,
+                    widget.car.imageUrl,
                     height: 300,
                     fit: BoxFit.cover,
                   ),
@@ -45,13 +57,13 @@ class CarDetailsPage extends StatelessWidget {
                       ),
                       Text(
                         'Car Details',
-                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25,),
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
                       ),
                       Container(
                         padding: EdgeInsets.all(8),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(50),
-                          color:Theme.of(context).colorScheme.surface,
+                          color: Theme.of(context).colorScheme.surface,
                         ),
                         child: Icon(Icons.more_horiz_outlined),
                       ),
@@ -64,8 +76,9 @@ class CarDetailsPage extends StatelessWidget {
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(25),
-                      topLeft: Radius.circular(25)),
+                    topRight: Radius.circular(25),
+                    topLeft: Radius.circular(25),
+                  ),
                 ),
                 child: Padding(
                   padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
@@ -76,22 +89,32 @@ class CarDetailsPage extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            car.name,
-                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25,color: Theme.of(context).textTheme.displayLarge?.color,),
-                              overflow: TextOverflow.ellipsis, // Adds ellipsis if text is too long
-                              maxLines: 1, 
+                            widget.car.name,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 25,
+                              color: Theme.of(context).textTheme.displayLarge?.color,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
                           ),
                           Row(
                             children: [
-                              Icon(Icons.star,color: Colors.amber,),
-                              Text(car.rating,style: TextStyle(color: Theme.of(context).textTheme.displayLarge?.color,fontWeight: FontWeight.bold,fontSize: 18),),
+                              Icon(Icons.star, color: Colors.amber),
+                              Text(
+                                widget.car.rating,
+                                style: TextStyle(
+                                  color: Theme.of(context).textTheme.displayLarge?.color,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                ),
+                              ),
                             ],
                           )
-                          
                         ],
                       ),
                       Text(
-                        car.description,
+                        widget.car.description,
                         style: TextStyle(fontSize: 18, color: Theme.of(context).textTheme.displayMedium?.color),
                       ),
                       SizedBox(height: 5),
@@ -99,7 +122,7 @@ class CarDetailsPage extends StatelessWidget {
                       SizedBox(height: 5),
                       Text(
                         'Specification',
-                        style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold,color:  Theme.of(context).textTheme.displayMedium?.color),
+                        style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Theme.of(context).textTheme.displayMedium?.color),
                       ),
                       SizedBox(height: 12),
                       Row(
@@ -108,21 +131,29 @@ class CarDetailsPage extends StatelessWidget {
                           buildSpecificationCard(
                             icon: Icons.bus_alert_sharp,
                             title: 'Capacity',
-                            value: '${car.seats} ',
+                            value: '${widget.car.seats} ',
                           ),
                           buildSpecificationCard(
                             icon: Icons.grid_view_outlined,
                             title: 'Engine Specs',
-                            value: '${car.enginePower}', // Ensure you have enginePower in your Car model
+                            value: '${widget.car.enginePower}',
                           ),
                           buildSpecificationCard(
                             icon: Icons.speed_sharp,
                             title: 'Max Speed',
-                            value: '${car.maxSpeed} ', // Ensure you have maxSpeed in your Car model
+                            value: '${widget.car.maxSpeed}',
                           ),
                         ],
                       ),
-                      Spacer(),
+                      SizedBox(height: 20),
+                      Text(
+                        'Reviews',
+                        style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Theme.of(context).textTheme.displayMedium?.color),
+                      ),
+                      // SizedBox(height: 20),
+                      Row(
+                        children: buildStars(widget.car.rating),
+                      ),
                     ],
                   ),
                 ),
@@ -131,34 +162,34 @@ class CarDetailsPage extends StatelessWidget {
             Stack(
               children: [
                 Container(
-                  height: 200,
+                  height: 150,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(25),
                       topRight: Radius.circular(25),
                     ),
-                    color:  Theme.of(context).colorScheme.surface
+                    color: Theme.of(context).colorScheme.surface,
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 40),
+                    padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 20),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
                           'Rental price',
-                          style: TextStyle(fontSize: 22, color:  Theme.of(context).textTheme.displayLarge?.color,fontWeight: FontWeight.bold),
+                          style: TextStyle(fontSize: 22, color: Theme.of(context).textTheme.displayLarge?.color, fontWeight: FontWeight.bold),
                         ),
                         Text(
-                          '\$${car.dailyRate}/day',
-                          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color:  Theme.of(context).textTheme.displaySmall?.color),
+                          '\$${widget.car.dailyRate}/day',
+                          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Theme.of(context).textTheme.displaySmall?.color),
                         ),
                       ],
                     ),
                   ),
                 ),
                 Positioned(
-                  top: 100,
+                  top: 60,
                   left: 0,
                   right: 0,
                   child: Container(
@@ -168,7 +199,7 @@ class CarDetailsPage extends StatelessWidget {
                         topLeft: Radius.circular(25),
                         topRight: Radius.circular(25),
                       ),
-                      color:  Theme.of(context).primaryColor
+                      color: Theme.of(context).primaryColor,
                     ),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 18),
@@ -177,7 +208,10 @@ class CarDetailsPage extends StatelessWidget {
                           backgroundColor: MaterialStateProperty.all(Colors.blue.shade600),
                         ),
                         onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=>BookingFormPage(car: car,)));
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => BookingFormPage(car: widget.car)),
+                          );
                         },
                         child: Text(
                           'Book Car',
@@ -228,5 +262,27 @@ class CarDetailsPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  List<Widget> buildStars(String ratingStr) {
+    double rating = double.tryParse(ratingStr) ?? 0.0; // Convert rating to double
+    List<Widget> stars = [];
+
+    // Full stars
+    for (int i = 0; i < rating.floor(); i++) {
+      stars.add(Icon(Icons.star, color: Colors.amber));
+    }
+
+    // Half star
+    if (rating % 1 >= 0.5) {
+      stars.add(Icon(Icons.star_half, color: Colors.amber));
+    }
+
+    // Empty stars
+    for (int i = stars.length; i < 5; i++) {
+      stars.add(Icon(Icons.star_border, color: Colors.amber));
+    }
+
+    return stars;
   }
 }

@@ -519,16 +519,23 @@ class _HomePageState extends State<HomePage> {
               SizedBox(height: 18,),
               // Recommended cars section
               searchProvider.lastSearchedBrand.isEmpty
-                  // ? Center(child: Text('Search for a car to see recommendations.'))
-                  ?SizedBox()
+                  ? SizedBox()
                   : FutureBuilder<List<Car>>(
                 future: getRecommendedCars(searchProvider.lastSearchedBrand),
                 builder: (context, snapshot) {
-                  // Debugging print
                   print('Fetching recommended cars for brand: ${searchProvider.lastSearchedBrand}');
 
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: CircularProgressIndicator());
+                    return Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          CircularProgressIndicator(),
+                          SizedBox(height: 8),
+                          Text('Loading recommendations...'),
+                        ],
+                      ),
+                    );
                   } else if (snapshot.hasError) {
                     print('Error: ${snapshot.error}');
                     return Center(child: Text('Error: ${snapshot.error}'));
@@ -550,7 +557,8 @@ class _HomePageState extends State<HomePage> {
                             'Recommended Cars',
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
-                              fontSize: 22,color: Theme.of(context).textTheme.displayLarge?.color
+                              fontSize: 22,
+                              color: Theme.of(context).textTheme.displayLarge?.color,
                             ),
                           ),
                         ),
@@ -589,7 +597,7 @@ class _HomePageState extends State<HomePage> {
 
 
               SizedBox(height: 18),
-              // Nearby Cars Section with Grid View
+              // All Cars Section with Grid View
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
