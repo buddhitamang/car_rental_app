@@ -57,7 +57,7 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
                       ),
                       Text(
                         'Car Details',
-                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25,color: Theme.of(context).textTheme.displayLarge?.color),
                       ),
                       Container(
                         padding: EdgeInsets.all(8),

@@ -33,7 +33,7 @@ class BrandCarsPage extends StatelessWidget {
                       onPressed: () {
                         Navigator.pop(context);
                       },
-                      icon: Icon(Icons.arrow_back_sharp, size: 35),
+                      icon: Icon(Icons.arrow_back),
                     ),
                   ),
                   Text(

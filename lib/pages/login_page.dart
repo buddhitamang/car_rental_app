@@ -38,7 +38,6 @@ class _LoginPageState extends State<LoginPage> {
         passwordController.text.trim(),
       );
 
-      // Navigate to the main page after successful login
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => MainPage()),

@@ -33,6 +33,19 @@ class TextfieldPage extends StatelessWidget {
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
           ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(
+              color: Theme.of(context).colorScheme.onSecondary
+            )
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(
+                  color: Theme.of(context).colorScheme.onSecondary
+              )
+          ),
+focusColor: Colors.white
         ),
       ),
     );

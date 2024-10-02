@@ -138,125 +138,207 @@ class _BookingFormPageState extends State<BookingFormPage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Theme.of(context).primaryColor,
-      appBar: AppBar(
-        title: const Text('Book Car'),
-        backgroundColor: Colors.transparent,
-      ),
+      // appBar: AppBar(
+      //   centerTitle: true,
+      //   title: const Text('Book Car',style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold),),
+      //   backgroundColor: Colors.transparent,
+      // ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Display the car image and name
-            Center(
-              child: Image.network(
-                widget.car.imageUrl,
-                height: 150,
-                fit: BoxFit.cover,
+        child: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(50),
+                      color: Theme.of(context).colorScheme.surface,
+                    ),
+                    child: IconButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      icon: Icon(Icons.arrow_back),
+                    ),
+                  ),
+                  Text(
+                    'Book Now',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25,color: Theme.of(context).textTheme.displayLarge?.color),
+                  ),
+                  Container(
+                    padding: EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(50),
+                      color: Theme.of(context).colorScheme.surface,
+                    ),
+                    child: Icon(Icons.more_horiz_outlined),
+                  ),
+                ],
               ),
-            ),
-            const SizedBox(height: 8),
-            Center(
-              child: Text(
-                widget.car.name,
+              Center(
+                child: Image.network(
+                  widget.car.imageUrl,
+                  height: 150,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Center(
+                child: Text(
+                  widget.car.name,
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).textTheme.displayLarge?.color,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: _fullNameController,
+                decoration: InputDecoration(
+                  labelText: 'Full Name',
+                  filled: true,
+                  fillColor: Theme.of(context).colorScheme.surface,
+                  border: const OutlineInputBorder(),
+                  enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.onSecondary
+                      )
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.onSecondary
+                      )
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: _phoneNumberController,
+                decoration: InputDecoration(
+                  labelText: 'Phone Number',
+                  filled: true,
+                  fillColor: Theme.of(context).colorScheme.surface,
+                  border: const OutlineInputBorder(
+
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.onSecondary
+                      )
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.onSecondary
+                      )
+                  ),
+                ),
+                keyboardType: TextInputType.phone,
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: _startDateController,
+                decoration: InputDecoration(
+                  labelText: 'Start Date',
+                  filled: true,
+                  fillColor: Theme.of(context).colorScheme.surface,
+                  border: const OutlineInputBorder(),
+                  enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.onSecondary
+                      )
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.onSecondary
+                      )
+                  ),
+                ),
+
+                onTap: () async {
+                  DateTime? selectedDate = await showDatePicker(
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime(2000),
+                    lastDate: DateTime(2100),
+                  );
+                  if (selectedDate != null) {
+                    setState(() {
+                      _startDate = selectedDate;
+                      _startDateController.text = _startDate!.toLocal().toString().split(' ')[0];
+                    });
+                  }
+                },
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: _endDateController,
+                decoration: InputDecoration(
+                  labelText: 'End Date',
+                  filled: true,
+                  fillColor: Theme.of(context).colorScheme.surface,
+                  border: const OutlineInputBorder(),
+                  enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.onSecondary
+                      )
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.onSecondary
+                      )
+                  ),
+                ),
+                onTap: () async {
+                  DateTime? selectedDate = await showDatePicker(
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime.now(),
+                    lastDate: DateTime(2100),
+                  );
+                  if (selectedDate != null) {
+                    setState(() {
+                      _endDate = selectedDate;
+                      _endDateController.text = _endDate!.toLocal().toString().split(' ')[0];
+                    });
+                  }
+                },
+              ),
+              const SizedBox(height: 20),
+              Text(
+                'Total Price: \$${totalPrice.toStringAsFixed(2)}',
                 style: TextStyle(
-                  fontSize: 20,
+                  fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: Theme.of(context).textTheme.displayLarge?.color,
+                  color: Theme.of(context).textTheme.displaySmall?.color,
                 ),
               ),
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: _fullNameController,
-              decoration: InputDecoration(
-                labelText: 'Full Name',
-                filled: true,
-                fillColor: Theme.of(context).colorScheme.surface,
-                border: const OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: _phoneNumberController,
-              decoration: InputDecoration(
-                labelText: 'Phone Number',
-                filled: true,
-                fillColor: Theme.of(context).colorScheme.surface,
-                border: const OutlineInputBorder(),
-              ),
-              keyboardType: TextInputType.phone,
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: _startDateController,
-              decoration: InputDecoration(
-                labelText: 'Start Date',
-                filled: true,
-                fillColor: Theme.of(context).colorScheme.surface,
-                border: const OutlineInputBorder(),
-              ),
-              onTap: () async {
-                DateTime? selectedDate = await showDatePicker(
-                  context: context,
-                  initialDate: DateTime.now(),
-                  firstDate: DateTime(2000),
-                  lastDate: DateTime(2100),
-                );
-                if (selectedDate != null) {
-                  setState(() {
-                    _startDate = selectedDate;
-                    _startDateController.text = _startDate!.toLocal().toString().split(' ')[0];
-                  });
-                }
-              },
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: _endDateController,
-              decoration: InputDecoration(
-                labelText: 'End Date',
-                filled: true,
-                fillColor: Theme.of(context).colorScheme.surface,
-                border: const OutlineInputBorder(),
-              ),
-              onTap: () async {
-                DateTime? selectedDate = await showDatePicker(
-                  context: context,
-                  initialDate: DateTime.now(),
-                  firstDate: DateTime.now(),
-                  lastDate: DateTime(2100),
-                );
-                if (selectedDate != null) {
-                  setState(() {
-                    _endDate = selectedDate;
-                    _endDateController.text = _endDate!.toLocal().toString().split(' ')[0];
-                  });
-                }
-              },
-            ),
-            const SizedBox(height: 20),
-            Text(
-              'Total Price: \$${totalPrice.toStringAsFixed(2)}',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).textTheme.displaySmall?.color,
-              ),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _isSubmitting ? null : _submitBooking,
-              child: _isSubmitting
-                  ? const CircularProgressIndicator()
-                  : Text(
-                'Confirm Booking',
-                style: TextStyle(
-                  color: Theme.of(context).textTheme.displayLarge?.color,
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: _isSubmitting ? null : _submitBooking,
+                child: _isSubmitting
+                    ? const CircularProgressIndicator()
+                    : Text(
+                  'Confirm Booking',
+                  style: TextStyle(
+                    color: Theme.of(context).textTheme.displayLarge?.color,
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

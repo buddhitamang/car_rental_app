@@ -64,7 +64,8 @@ class _ForgotPwPageState extends State<ForgotPwPage> {
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
-        title: Text('Forgot Password'),
+        centerTitle: true,
+        title: Text('Forgot Password',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 25),),
         backgroundColor: Colors.transparent,
       ),
       body: Padding(
