@@ -1,6 +1,7 @@
 import 'package:car_rental_app/pages/bookine_form_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../model/car.dart';
 
@@ -14,7 +15,9 @@ class CarDetailsPage extends StatefulWidget {
 }
 
 class _CarDetailsPageState extends State<CarDetailsPage> {
-  final TextEditingController _commentController = TextEditingController();
+  // final TextEditingController _commentController = TextEditingController();
+  final _pageController=PageController();
+  bool _isSelectedFavoirte=false;
 
   @override
   void initState() {
@@ -32,10 +35,42 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
               children: [
                 Container(
                   height: 300,
-                  child: Image.network(
-                    widget.car.imageUrl,
-                    height: 300,
-                    fit: BoxFit.cover,
+                  child: PageView(
+                    controller: _pageController,
+                    children: [
+                      Image.network(
+                        widget.car.imageUrl,
+                        height: 300,
+                        fit: BoxFit.cover,
+                      ),
+                      Image.network(
+                        'https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg',
+                        height: 300,
+                        fit: BoxFit.cover,
+                      ),
+                      Image.network(
+                        'https://th.bing.com/th/id/OIG2.9O4YqGf98tiYzjKDvg7L',
+                        height: 300,
+                        fit: BoxFit.cover,
+                      ),
+                    ],
+                  ),
+                ),
+                Positioned(
+                  bottom: 8,
+                  left: 0,
+                  right: 0,
+                  child: Center(
+                    child: SmoothPageIndicator(
+                      controller: _pageController,
+                      count: 3,
+                      effect: WormEffect(
+                        activeDotColor: Colors.amber,
+                        dotColor: Colors.black,
+                        dotHeight: 12,
+                        dotWidth: 20
+                      ),
+                    ),
                   ),
                 ),
                 Padding(
@@ -57,21 +92,30 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
                       ),
                       Text(
                         'Car Details',
-                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25,color: Theme.of(context).textTheme.displayLarge?.color),
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 25,
+                          color: Theme.of(context).textTheme.displayLarge?.color,
+                        ),
                       ),
                       Container(
-                        padding: EdgeInsets.all(8),
+                        // padding: EdgeInsets.all(8),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(50),
                           color: Theme.of(context).colorScheme.surface,
                         ),
-                        child: Icon(Icons.more_horiz_outlined),
+                        child: IconButton(onPressed: (){
+                          setState(() {
+                            _isSelectedFavoirte=!_isSelectedFavoirte;
+                          });
+                        }, icon: Icon(Icons.favorite,color: _isSelectedFavoirte?Colors.red:Colors.white,)),
                       ),
                     ],
                   ),
                 ),
               ],
             ),
+
             Expanded(
               child: Container(
                 decoration: BoxDecoration(
