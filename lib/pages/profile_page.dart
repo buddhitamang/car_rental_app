@@ -16,13 +16,28 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   File? _selectedImage; // Class member for the selected image
   final User? currentUser = FirebaseAuth.instance.currentUser;
-  final String name = (FirebaseAuth.instance.currentUser?.email?.split('@').first) ?? 'Guest';
+  final String name =
+      (FirebaseAuth.instance.currentUser?.email?.split('@').first) ?? 'Guest';
 
   // List of Profile Settings
   final List profileContainer = [
-    [Icons.person, 'Username', 'buddhitamang107@gmail.com', Icons.arrow_forward_ios_rounded],
-    [Icons.settings, 'Settings', 'App settings', Icons.arrow_forward_ios_rounded],
-    [Icons.help, 'Help and Support', 'Support Service',],
+    [
+      Icons.person,
+      'Username',
+      'buddhitamang107@gmail.com',
+      Icons.arrow_forward_ios_rounded
+    ],
+    [
+      Icons.settings,
+      'Settings',
+      'App settings',
+      Icons.arrow_forward_ios_rounded
+    ],
+    [
+      Icons.help,
+      'Help and Support',
+      'Support Service',
+    ],
   ];
 
   // Fetches the count of orders with the specified status
@@ -34,7 +49,8 @@ class _ProfilePageState extends State<ProfilePage> {
         .snapshots()
         .map((snapshot) {
       final count = snapshot.docs.length;
-      print('Query for status $status returned $count documents.'); // Debugging line
+      print(
+          'Query for status $status returned $count documents.'); // Debugging line
       return count;
     });
   }
@@ -54,6 +70,7 @@ class _ProfilePageState extends State<ProfilePage> {
   // Display Image Picker Modal
   void showImagePicker(BuildContext context) {
     showModalBottomSheet(
+      backgroundColor: Theme.of(context).colorScheme.surface,
       context: context,
       builder: (context) {
         return SafeArea(
@@ -64,9 +81,9 @@ class _ProfilePageState extends State<ProfilePage> {
                 child: Text(
                   'Choose what you want',
                   style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                  ),
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).textTheme.displayLarge?.color),
                 ),
               ),
               ListTile(
@@ -99,7 +116,6 @@ class _ProfilePageState extends State<ProfilePage> {
       body: SafeArea(
         child: Column(
           children: [
-            // Header with Logout Button
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: Container(
@@ -109,7 +125,8 @@ class _ProfilePageState extends State<ProfilePage> {
                   color: Theme.of(context).colorScheme.surface,
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -118,7 +135,8 @@ class _ProfilePageState extends State<ProfilePage> {
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 28,
-                          color: Theme.of(context).textTheme.displayLarge?.color,
+                          color:
+                              Theme.of(context).textTheme.displayLarge?.color,
                         ),
                       ),
                       Container(
@@ -138,7 +156,9 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ),
             ),
-
+            SizedBox(
+              height: 20,
+            ),
             // Profile Picture and User Information
             Column(
               children: [
@@ -156,7 +176,8 @@ class _ProfilePageState extends State<ProfilePage> {
                       right: 0,
                       child: IconButton(
                         onPressed: () => showImagePicker(context),
-                        icon: Icon(Icons.camera_alt, color: Colors.grey.shade200),
+                        icon:
+                            Icon(Icons.camera_alt, color: Colors.grey.shade200),
                       ),
                     ),
                   ],
@@ -172,7 +193,9 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
                 Text(
                   currentUser?.email ?? 'No User',
-                  style: TextStyle(fontSize: 18, color: Theme.of(context).textTheme.displayMedium?.color),
+                  style: TextStyle(
+                      fontSize: 18,
+                      color: Theme.of(context).textTheme.displayMedium?.color),
                 ),
               ],
             ),
@@ -185,11 +208,14 @@ class _ProfilePageState extends State<ProfilePage> {
                 children: [
                   Expanded(
                     child: StreamBuilder<int>(
-                      stream: _getOrderCount('active'), // Stream for active orders
+                      stream: _getOrderCount('active'),
+                      // Stream for active orders
                       builder: (context, snapshot) {
-                        final activeCount = snapshot.data ?? 0; // Default to 0 if null
+                        final activeCount =
+                            snapshot.data ?? 0; // Default to 0 if null
                         return ProfileContainer(
-                          number: '$activeCount', // Displaying active order count
+                          number: '$activeCount',
+                          // Displaying active order count
                           title: 'Active',
                           backgroundColor: Colors.deepPurpleAccent.shade100,
                         );
@@ -198,26 +224,34 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                   Expanded(
                     child: StreamBuilder<int>(
-                      stream: _getOrderCount('Pending'), // Stream for pending orders
+                      stream: _getOrderCount('Pending'),
+                      // Stream for pending orders
                       builder: (context, snapshot) {
-                        final pendingCount = snapshot.data ?? 0; // Default to 0 if null
+                        final pendingCount =
+                            snapshot.data ?? 0; // Default to 0 if null
                         return ProfileContainer(
-                          number: '$pendingCount', // Displaying pending order count
+                          number: '$pendingCount',
+                          // Displaying pending order count
                           title: 'Pending',
-                          backgroundColor: Theme.of(context).colorScheme.surface,
+                          backgroundColor:
+                              Theme.of(context).colorScheme.surface,
                         );
                       },
                     ),
                   ),
                   Expanded(
                     child: StreamBuilder<int>(
-                      stream: _getOrderCount('complete'), // Stream for completed orders
+                      stream: _getOrderCount('complete'),
+                      // Stream for completed orders
                       builder: (context, snapshot) {
-                        final completeCount = snapshot.data ?? 0; // Default to 0 if null
+                        final completeCount =
+                            snapshot.data ?? 0; // Default to 0 if null
                         return ProfileContainer(
-                          number: '$completeCount', // Displaying completed order count
+                          number: '$completeCount',
+                          // Displaying completed order count
                           title: 'Complete',
-                          backgroundColor: Theme.of(context).colorScheme.surface,
+                          backgroundColor:
+                              Theme.of(context).colorScheme.surface,
                         );
                       },
                     ),
@@ -234,7 +268,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(18),
-                    color: Theme.of(context).colorScheme.secondary,
+                    color: Theme.of(context).primaryColor,
                   ),
                   child: ListView.builder(
                     physics: NeverScrollableScrollPhysics(),

@@ -113,6 +113,10 @@ class _CustomDrawerState extends State<CustomDrawer> {
                 Navigator.of(context).pop(); // Close the dialog without signing out
               },
               child: Text('Cancel',style: TextStyle(color:  Theme.of(context).textTheme.displaySmall?.color),),
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.blue,
+                foregroundColor: Colors.white
+              )
             ),
             TextButton(
               onPressed: () {
@@ -126,6 +130,10 @@ class _CustomDrawerState extends State<CustomDrawer> {
                 );
               },
               child: Text('Logout',style: TextStyle(color:  Theme.of(context).textTheme.displaySmall?.color),),
+                style: TextButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    foregroundColor: Colors.white
+                )
             ),
           ],
         );

@@ -1,4 +1,5 @@
 import 'package:car_rental_app/pages/bookine_form_page.dart';
+import 'package:car_rental_app/pages/review_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -49,7 +50,11 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
                         fit: BoxFit.cover,
                       ),
                       Image.network(
-                        'https://th.bing.com/th/id/OIG2.9O4YqGf98tiYzjKDvg7L',
+                        'https://fiverr-res.cloudinary.com/images/t_main1,q_auto,f_auto,q_auto,f_auto/gigs/385238136/original/36b2a756dc3d07a4f1c5451ba8699ca46fe48a2d/do-ai-image-upscaling-for-you-insatant.jpg',
+                        height: 300,
+                        fit: BoxFit.cover,
+                      ),     Image.network(
+                        'https://imageupscaler.com/wp-content/uploads/2024/07/deblured-cutty-fox.jpg',
                         height: 300,
                         fit: BoxFit.cover,
                       ),
@@ -63,10 +68,10 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
                   child: Center(
                     child: SmoothPageIndicator(
                       controller: _pageController,
-                      count: 3,
+                      count: 4,
                       effect: WormEffect(
                         activeDotColor: Colors.amber,
-                        dotColor: Colors.black,
+                        dotColor: Colors.black87,
                         dotHeight: 12,
                         dotWidth: 20
                       ),
@@ -190,9 +195,14 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
                         ],
                       ),
                       SizedBox(height: 20),
-                      Text(
-                        'Reviews',
-                        style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Theme.of(context).textTheme.displayMedium?.color),
+                      GestureDetector(
+                        onTap: (){
+                          Navigator.push(context,MaterialPageRoute(builder: (context)=>ReviewPage()));
+                        },
+                        child: Text(
+                          'Reviews',
+                          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Theme.of(context).textTheme.displayMedium?.color),
+                        ),
                       ),
                       // SizedBox(height: 20),
                       Row(

@@ -237,6 +237,8 @@ class _HomePageState extends State<HomePage> {
     }
 
     final User? currentUser = FirebaseAuth.instance.currentUser;
+    final email = currentUser?.email ?? 'no user';
+    final username = email.split('@')[0];
 
     Future<List<Car>> getRecommendedCars(String brandName) async {
       // Map brand names to their respective IDs
@@ -247,7 +249,8 @@ class _HomePageState extends State<HomePage> {
         'ferrari': '4',
       };
 
-      final brandId = brandIdMap[brandName.toLowerCase()]; // Convert brand name to lowercase
+      final brandId = brandIdMap[
+          brandName.toLowerCase()]; // Convert brand name to lowercase
 
       if (brandId == null) {
         print('No brand found for the name: $brandName');
@@ -262,10 +265,10 @@ class _HomePageState extends State<HomePage> {
             .collection('cars')
             .get();
 
-        // Convert snapshot to a list of Car objects
         final recommendedCars = carsSnapshot.docs.map((doc) {
           final data = doc.data();
-          return Car.fromJson(data); // Ensure Car.fromJson handles your data structure
+          return Car.fromJson(
+              data); // Ensure Car.fromJson handles your data structure
         }).toList();
 
         print('Cars fetched: $recommendedCars'); // Log fetched cars
@@ -276,13 +279,89 @@ class _HomePageState extends State<HomePage> {
       }
     }
 
+    void showFeedbackOptions() {
+      final TextEditingController feedbackController = TextEditingController();
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Hey, how's your day going?"),
+            content: Container(
+              height: 420,
+              width: 240,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    "We would love to hear your thoughts!",
+                    style: TextStyle(
+                        fontSize: 16,
+                        color:
+                            Theme.of(context).textTheme.displayMedium?.color),
+                  ),
+                  SizedBox(height: 16),
+                  TextField(
+                    controller: feedbackController, // Assign the controller
+                    decoration: InputDecoration(
+                      labelText: 'Your feedback',
+                      border: OutlineInputBorder(),
+                    ),
+                    maxLines: 4,
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () async {
+                  String feedback = feedbackController.text;
+                  if (feedback.isNotEmpty) {
+                    await FirebaseFirestore.instance
+                        .collection('feedbacks')
+                        .add({
+                      'feedback': feedback,
+                      'timestamp': FieldValue.serverTimestamp(),
+                      // Add a timestamp
+                    });
 
-
-
-
-
-
-
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        backgroundColor: Theme.of(context).colorScheme.surface,
+                        content: Text('Feedback submitted successfully!'),
+                        duration: Duration(seconds: 2),
+                      ),
+                    );
+                    Navigator.of(context).pop(); // Close the dialog
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Please enter feedback!'),
+                        duration: Duration(seconds: 2),
+                      ),
+                    );
+                  }
+                },
+                child: Text('Submit'),
+                style: TextButton.styleFrom(
+                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.blue,
+                ),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(); // Close the dialog
+                },
+                child: Text('Cancel'),
+                style: TextButton.styleFrom(
+                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.red,
+                ),
+              ),
+            ],
+          );
+        },
+      );
+    }
 
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
@@ -300,18 +379,24 @@ class _HomePageState extends State<HomePage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Welcome',
+                  'Good Moring ,',
                   style: TextStyle(
                       fontSize: 24,
                       color: Colors.grey.shade600,
                       fontWeight: FontWeight.bold),
                 ),
                 Text(
-                  currentUser?.email ?? 'no user',
+                  username,
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 26),
                 ),
               ],
             ),
+            IconButton(
+              onPressed: () {
+                showFeedbackOptions();
+              },
+              icon: Icon(Icons.contact_support),
+            )
           ],
         ),
       ),
@@ -516,85 +601,97 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
 
-              SizedBox(height: 18,),
+              SizedBox(
+                height: 18,
+              ),
               // Recommended cars section
               searchProvider.lastSearchedBrand.isEmpty
                   ? SizedBox()
                   : FutureBuilder<List<Car>>(
-                future: getRecommendedCars(searchProvider.lastSearchedBrand),
-                builder: (context, snapshot) {
-                  print('Fetching recommended cars for brand: ${searchProvider.lastSearchedBrand}');
+                      future:
+                          getRecommendedCars(searchProvider.lastSearchedBrand),
+                      builder: (context, snapshot) {
+                        print(
+                            'Fetching recommended cars for brand: ${searchProvider.lastSearchedBrand}');
 
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          CircularProgressIndicator(),
-                          SizedBox(height: 8),
-                          Text('Loading recommendations...'),
-                        ],
-                      ),
-                    );
-                  } else if (snapshot.hasError) {
-                    print('Error: ${snapshot.error}');
-                    return Center(child: Text('Error: ${snapshot.error}'));
-                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return Center(child: Text('No recommendations available for this brand.'));
-                  }
-
-                  final recommendedCars = snapshot.data!;
-                  print('Recommended Cars: $recommendedCars');
-
-                  return Container(
-                    height: 280,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Text(
-                            'Recommended Cars',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 22,
-                              color: Theme.of(context).textTheme.displayLarge?.color,
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return Center(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                CircularProgressIndicator(),
+                                SizedBox(height: 8),
+                                Text('Loading recommendations...'),
+                              ],
                             ),
-                          ),
-                        ),
-                        Expanded(
-                          child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: recommendedCars.length,
-                            itemBuilder: (context, index) {
-                              final car = recommendedCars[index];
-                              return GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => CarDetailsPage(car: car),
-                                    ),
-                                  );
-                                },
-                                child: RecommendedCar(
-                                  carName: car.name,
-                                  seatCapacity: car.seats,
-                                  rate: car.dailyRate.toString(),
-                                  imagePath: car.imageUrl,
-                                  rating: car.rating,
+                          );
+                        } else if (snapshot.hasError) {
+                          print('Error: ${snapshot.error}');
+                          return Center(
+                              child: Text('Error: ${snapshot.error}'));
+                        } else if (!snapshot.hasData ||
+                            snapshot.data!.isEmpty) {
+                          return Center(
+                              child: Text(
+                                  'No recommendations available for this brand.'));
+                        }
+
+                        final recommendedCars = snapshot.data!;
+                        print('Recommended Cars: $recommendedCars');
+
+                        return Container(
+                          height: 280,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8.0),
+                                child: Text(
+                                  'Recommended Cars',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 22,
+                                    color: Theme.of(context)
+                                        .textTheme
+                                        .displayLarge
+                                        ?.color,
+                                  ),
                                 ),
-                              );
-                            },
+                              ),
+                              Expanded(
+                                child: ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: recommendedCars.length,
+                                  itemBuilder: (context, index) {
+                                    final car = recommendedCars[index];
+                                    return GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                CarDetailsPage(car: car),
+                                          ),
+                                        );
+                                      },
+                                      child: RecommendedCar(
+                                        carName: car.name,
+                                        seatCapacity: car.seats,
+                                        rate: car.dailyRate.toString(),
+                                        imagePath: car.imageUrl,
+                                        rating: car.rating,
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                      ],
+                        );
+                      },
                     ),
-                  );
-                },
-              ),
-
-
 
               SizedBox(height: 18),
               // All Cars Section with Grid View
@@ -626,7 +723,8 @@ class _HomePageState extends State<HomePage> {
 
 // StreamBuilder to fetch all nearby cars
               StreamBuilder<QuerySnapshot>(
-                stream: FirebaseFirestore.instance.collection('brands').snapshots(),
+                stream:
+                    FirebaseFirestore.instance.collection('brands').snapshots(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Center(child: CircularProgressIndicator());
@@ -641,14 +739,16 @@ class _HomePageState extends State<HomePage> {
 
                   return FutureBuilder<void>(
                     future: Future.forEach(brandDocs, (brandDoc) async {
-                      final carSnapshot = await brandDoc.reference.collection('cars').get();
+                      final carSnapshot =
+                          await brandDoc.reference.collection('cars').get();
                       final cars = carSnapshot.docs.map((carDoc) {
                         final carData = carDoc.data() as Map<String, dynamic>;
                         return Car(
                           id: carDoc.id,
                           name: carData['name'] ?? 'Unknown',
                           seats: carData['seats']?.toString() ?? '0',
-                          dailyRate: (carData['dailyRate'] as num?)?.toDouble() ?? 0.0,
+                          dailyRate:
+                              (carData['dailyRate'] as num?)?.toDouble() ?? 0.0,
                           imageUrl: carData['imageUrl'] ?? 'default_image_url',
                           description: carData['description'] ?? '',
                           enginePower: carData['enginePower'] ?? '',
@@ -659,7 +759,8 @@ class _HomePageState extends State<HomePage> {
                       allNearbyCars.addAll(cars);
                     }),
                     builder: (context, asyncSnapshot) {
-                      if (asyncSnapshot.connectionState == ConnectionState.waiting) {
+                      if (asyncSnapshot.connectionState ==
+                          ConnectionState.waiting) {
                         return Center(child: CircularProgressIndicator());
                       }
 
@@ -702,7 +803,6 @@ class _HomePageState extends State<HomePage> {
                   );
                 },
               )
-
             ],
           ),
         ),

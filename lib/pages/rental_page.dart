@@ -94,6 +94,10 @@ class BookingListPage extends StatelessWidget {
               DateFormat('yMMMd').format(booking.endDate);
 
               return ListTile(
+                leading: CircleAvatar(
+                  backgroundColor: Theme.of(context).colorScheme.surface,
+                  child: Text(booking.fullName,style: TextStyle(color: Theme.of(context).textTheme.displayLarge?.color),),
+                ),
                 title: Text('Car ID: ${booking.carId}',style: TextStyle( color: Theme.of(context).textTheme.displayLarge?.color),),
                 subtitle: Text('From: $formattedStartDate To: $formattedEndDate,',style: TextStyle( color: Theme.of(context).textTheme.displayLarge?.color),),
                 trailing: Row(
